@@ -23,43 +23,104 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full transform transition-all duration-300 hover:scale-105">
+<body style="
+    background-image: url('https://images.unsplash.com/photo-1511174511562-5f97f4f4e61a?auto=format&fit=crop&w=1200&q=80');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
+    ">
+    <div style="background: rgba(255,255,255,0.85);" class="p-8 rounded-2xl shadow-xl max-w-lg w-full mx-auto my-8 transform transition-all duration-300 hover:scale-105">
         <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Kalkulator Obat Sederhana</h1>
+
         <div class="space-y-6">
+            <!-- Dropdown Pilih Obat -->
+            <div>
+                <label for="drugSelect" class="block text-gray-700 text-lg font-semibold mb-2">Pilih Obat:</label>
+                <select id="drugSelect"
+                        class="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 text-lg"
+                        aria-label="Pilih obat">
+                    <option value="">-- Pilih Obat --</option>
+                    <option value="paracetamol">Paracetamol (500 mg/tablet)</option>
+                    <option value="amoxicillin">Amoxicillin (250 mg/kapsul)</option>
+                    <option value="ibuprofen">Ibuprofen (200 mg/tablet)</option>
+                    <option value="ctm">CTM (4 mg/tablet)</option>
+                    <option value="cefixime">Cefixime (200 mg/tablet)</option>
+                    <option value="triamcinolon">Triamcinolon (4 mg/tablet)</option>
+                    <option value="salbutamol">Salbutamol (2 mg/tablet)</option>
+                    <option value="rhinofed">Rhinofed (60 mg/tablet)</option>
+                    <option value="lapifed">Lapifed (60 mg/tablet)</option>
+                </select>
+            </div>
+
+            <!-- Input Dosis Obat -->
             <div>
                 <label for="drugDose" class="block text-gray-700 text-lg font-semibold mb-2">Dosis Obat (mg/ml/unit):</label>
                 <input type="number" id="drugDose" placeholder="Contoh: 100"
                        class="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 text-lg"
                        aria-label="Masukkan dosis obat">
             </div>
+
+            <!-- Input Dosis yang Diinginkan Dokter -->
             <div>
                 <label for="desiredDose" class="block text-gray-700 text-lg font-semibold mb-2">Dosis yang Diinginkan Dokter (mg/ml/unit):</label>
                 <input type="number" id="desiredDose" placeholder="Contoh: 50"
                        class="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 text-lg"
                        aria-label="Masukkan dosis yang diinginkan dokter">
             </div>
+
+            <!-- Input Jumlah Racikan yang Ingin Dibuat -->
             <div>
                 <label for="compoundAmount" class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Racikan yang Ingin Dibuat (ml/tablet/kapsul):</label>
                 <input type="number" id="compoundAmount" placeholder="Contoh: 10"
                        class="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 text-lg"
                        aria-label="Masukkan jumlah racikan yang ingin dibuat">
             </div>
+
+            <!-- Tombol Hitung -->
             <button onclick="calculateDrugAmount()"
                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Hitung Jumlah Obat
             </button>
+
+            <!-- Hasil -->
             <div id="resultBox" class="bg-blue-50 p-4 rounded-lg border-2 border-blue-400 hidden">
                 <p class="text-blue-800 text-lg font-semibold">Jumlah Obat yang Harus Disiapkan:</p>
                 <p id="result" class="text-blue-900 text-3xl font-extrabold mt-2"></p>
             </div>
+
+            <!-- Area Pesan Kesalahan/Informasi -->
             <div id="messageBox" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <strong class="font-bold">Error!</strong>
                 <span id="messageText" class="block sm:inline"></span>
             </div>
         </div>
     </div>
+
     <script>
+        // Data dosis bawaan obat
+        const drugData = {
+            paracetamol: 500,
+            amoxicillin: 250,
+            ibuprofen: 200,
+            ctm: 4,
+            cefixime: 200,
+            triamcinolon: 4,
+            salbutamol: 2,
+            rhinofed: 60,
+            lapifed: 60
+        };
+
+        document.getElementById('drugSelect').addEventListener('change', function () {
+            const selectedValue = this.value;
+            const doseInput = document.getElementById('drugDose');
+            if (drugData[selectedValue]) {
+                doseInput.value = drugData[selectedValue];
+            } else {
+                doseInput.value = '';
+            }
+        });
+
         function showMessage(message, type = 'info') {
             const messageBox = document.getElementById('messageBox');
             const messageText = document.getElementById('messageText');
@@ -78,6 +139,7 @@
                 messageBox.classList.add('hidden');
             }, 5000);
         }
+
         function calculateDrugAmount() {
             const drugDose = parseFloat(document.getElementById('drugDose').value);
             const desiredDose = parseFloat(document.getElementById('desiredDose').value);
